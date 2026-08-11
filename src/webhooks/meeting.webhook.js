@@ -1,16 +1,23 @@
 const meetingWebhook = async (req, res) => {
     try {
-        const event = req.body;
+        console.log("========== RECALL WEBHOOK ==========");
 
         console.log(
-            "[Recall Webhook]",
-            JSON.stringify(event, null, 2)
+            "Event:",
+            req.body.event
         );
+
+        console.log(
+            "Data:",
+            JSON.stringify(req.body.data, null, 2)
+        );
+
+        console.log("====================================");
 
         return res.sendStatus(200);
     } catch (error) {
         console.error(
-            "[Recall Webhook] Error:",
+            "[Recall Webhook Error]",
             error
         );
 
