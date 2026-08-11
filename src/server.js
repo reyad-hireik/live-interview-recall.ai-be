@@ -1,14 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import interviewRoutes from "./routes/interview.js";
-const meetingRoutes = require("./routes/meeting.routes");
-
-const recallRoutes =
-    require("./routes/recall.routes");
-
-const recallWebhook =
-    require("./webhooks/recall.webhook");
+import meetingRoutes from "./routes/meeting.routes.js";
+import meetingWebhook from "./webhooks/meeting.webhook.js";
 
 dotenv.config();
 const app = express();
@@ -22,7 +16,7 @@ app.use("/", (req, res) => {
 
 app.use("/api/meetings", meetingRoutes);
 
-app.post("/webhooks/recall", recallWebhook);
+app.post("/webhooks/meeting", meetingWebhook);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);

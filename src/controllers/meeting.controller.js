@@ -1,4 +1,4 @@
-const meetingService = require("../services/meeting.service");
+import meetingService from "../services/meeting.service.js";
 
 const createBot = async (req, res) => {
     try {
@@ -99,8 +99,7 @@ const getTranscript = async (req, res) => {
     }
 };
 
-
-module.exports = {
+export default {
     createBot,
     getBot,
     getTranscript,

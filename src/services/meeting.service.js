@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios";
 
 const recallClient = axios.create({
     baseURL: process.env.RECALL_BASE_URL,
@@ -62,7 +62,7 @@ const getTranscript = async (transcriptId) => {
     return response.data;
 };
 
-module.exports = {
+export default {
     createBot,
     getBot,
     getTranscript,

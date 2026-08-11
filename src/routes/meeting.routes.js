@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import meetingController from "../controllers/meeting.controller.js";
 
-const meetingController = require("../controllers/meeting.controller");
+const router = express.Router();
 
 router.post("/bot", meetingController.createBot);
 
@@ -9,4 +9,4 @@ router.get("/bot/:botId", meetingController.getBot);
 
 router.get("/transcript/:transcriptId", meetingController.getTranscript);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const recallWebhook = async (req, res) => {
+const meetingWebhook = async (req, res) => {
     try {
         const event = req.body;
 
@@ -18,4 +18,4 @@ const recallWebhook = async (req, res) => {
     }
 };
 
-module.exports = recallWebhook;
+export default meetingWebhook;
