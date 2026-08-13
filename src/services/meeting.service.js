@@ -1,4 +1,7 @@
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const recallClient = axios.create({
     baseURL: process.env.RECALL_BASE_URL,
@@ -13,11 +16,14 @@ const createBot = async ({
     meetingUrl,
     botName = "Meeting Notetaker",
     joinAt = null,
+    candidateId
 }) => {
     const payload = {
         meeting_url: meetingUrl,
         bot_name: botName,
-
+        metadata: {
+            candidate_id: candidateId
+        },
         recording_config: {
             transcript: {
                 provider: {

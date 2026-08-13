@@ -6,6 +6,7 @@ const createBot = async (req, res) => {
             meetingUrl,
             botName,
             joinAt,
+            candidateId
         } = req.body;
 
         if (!meetingUrl) {
@@ -19,6 +20,7 @@ const createBot = async (req, res) => {
             meetingUrl,
             botName,
             joinAt,
+            candidateId
         });
 
         return res.status(201).json({
