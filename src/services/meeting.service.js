@@ -1,5 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import { companyLogoBase64 } from "../helper/asset.js";
 
 dotenv.config();
 
@@ -23,6 +24,16 @@ const createBot = async ({
         bot_name: botName,
         metadata: {
             candidate_id: candidateId
+        },
+        automatic_video_output: {
+            in_call_not_recording: {
+                kind: "jpeg",
+                b64_data: companyLogoBase64,
+            },
+            in_call_recording: {
+                kind: "jpeg",
+                b64_data: companyLogoBase64,
+            },
         },
         recording_config: {
             transcript: {
@@ -53,23 +64,63 @@ const createBot = async ({
 };
 
 const getBot = async (botId) => {
-    const response = await recallClient.get(
-        `/api/v1/bot/${botId}/`
-    );
+    const response = await recallClient.get(`/api/v1/bot/${botId}`);
+    const bot = response?.data?.bot || response?.data || {};
+    const statusChanges = Array.isArray(bot.status_changes) ? bot.status_changes : [];
+    const latestStatus = statusChanges[statusChanges.length - 1]?.code || null;
 
-    return response.data;
+    const activeStatuses = [
+        "joining_call",
+        "in_waiting_room",
+        "in_call_not_recording",
+        "in_call_recording",
+    ];
+    const endedStatuses = ["call_ended", "recording_done", "done"];
+
+    return {
+        bot: {
+            id: bot.id || botId,
+            name: (bot.bot_name || "Meeting Notetaker").toLowerCase(),
+        },
+        metadata: bot.metadata || {},
+        status: activeStatuses.includes(latestStatus) ? "in_call" : "call_ended",
+    };
 };
 
 const getTranscript = async (transcriptId) => {
     const response = await recallClient.get(
         `/api/v1/transcript/${transcriptId}/`
     );
+    const transcriptUrl = response?.data.data.download_url || {};
+    const transcript = await axios.get(transcriptUrl);
 
-    return response.data;
+    return transcript.data.map(entry => {
+        const speech = entry.words.map(word => word.text).join(" ");
+        const lastWord = entry.words[entry.words.length - 1];
+
+        return {
+            participant: entry.participant.name,
+            isHost: entry.participant.is_host,
+            platform: entry.participant.platform,
+            speech: speech,
+            language: entry.language_code,
+            speechAt: lastWord?.end_timestamp?.absolute || ""
+        };
+    });
+};
+
+const getRecording = async (recordingId) => {
+    const response = await recallClient.get(
+        `/api/v1/recording/${recordingId}/`
+    );
+    const recordingUrl = response?.data?.media_shortcuts?.video_mixed?.data?.download_url || {};
+
+    return recordingUrl;
 };
 
 export default {
     createBot,
     getBot,
     getTranscript,
+    getRecording
 };

@@ -53,7 +53,7 @@ const getBot = async (req, res) => {
 
         return res.json({
             success: true,
-            bot,
+            data: bot,
         });
 
     } catch (error) {
@@ -101,8 +101,35 @@ const getTranscript = async (req, res) => {
     }
 };
 
+const getRecording = async (req, res) => {
+    try {
+        const { recordingId } = req.params;
+
+        const recording = await meetingService.getRecording(recordingId);
+
+        return res.json({
+            success: true,
+            recording,
+        });
+    } catch (error) {
+        console.error(
+            "[Recall] Get recording failed:",
+            error.response?.data || error.message
+        );
+
+        return res.status(
+            error.response?.status || 500
+        ).json({
+            success: false,
+            message: "Failed to get recording",
+            error: error.response?.data || error.message,
+        });
+    }
+};
+
 export default {
     createBot,
     getBot,
     getTranscript,
+    getRecording
 };

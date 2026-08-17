@@ -8,5 +8,6 @@ router.post("/bot", meetingController.createBot);
 router.get("/bot/:botId", meetingController.getBot);
 
 router.get("/transcript/:transcriptId", meetingController.getTranscript);
+router.get("/recording/:recordingId", meetingController.getRecording);
 
 export default router;
